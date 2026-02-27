@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+    <head>
+        <title>Tic Tac Toe</title>
+        <style type="text/css">
+            #bigbox {width: 330px; margin: 0 auto; font-size: 24}
+            .box-container {width: 330px; margin: 0 auto; font-size: 0}
+
+            .square h3 {font-size: 24px; color: #3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";}
+            
+            .square {border: 1px solid #999; max-width: 100px; width: 100%; text-align: center; display: inline-block; height: 100px; vertical-align: top; margin: 5px 5px 5px 5px; box-sizing: border-box; }
+            .square:hover {background-color: #aa45c5; color: #fff;}
+
+            #turn {font-size: 24px; color: #3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";}
+            #start {font-size: 24px; color:#3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif"}
+
+        </style>
+    </head>
+    <body>
+        <div id="bigbox">
+            <h1>Tony's Tic Tac Toe</h1>
+            
+            <div class="box-container">
+                <div id="turn">X's Turn</div>
+                <script>
+                    const NUM_SQUARES = 9;
+                    for (i=0; i<NUM_SQUARES; i++)
+                    {
+                    id = "sq"+i;
+                    document.write( "<div class='square' id='" + id + "'></div>" );
+                    }
+                </script>
+
+
+
+                <script>
+                    
+                    function buttonPressHandler()
+                    {
+                        this.innerHTML = "<h3>X</h3>"
+                        // Grabbing index of str, a little mickey mouse but it works
+                        alert(this.id[2])
+                    }
+
+                    window.onload = 
+                        function()
+                        {
+                            var btn = document.getElementById("button")
+                            btn.onclick= buttonPressHandler;
+                        }
+                    
+                    // document.getElementById("sq0").innerHTML = "<h3>X</h3>"
+                    // document.getElementById("sq1").innerHTML = "<h3>X</h3>"
+                    // document.getElementById("sq4").innerHTML = "<h3>O</h3>"
+                    for (y=0; y<9; y++)
+                    {
+                        var id = "sq" + y;
+                        var square = document.getElementById(id);
+                        square.onclick = buttonPressHandler;
+                    }
+                </script>
+            
+            
+        </div>
+
+            <br>
+            <button type="button" id="start">Start Game</button>
+            <br>
+            <br>
+            <a href="https://en.wikipidia.org/wiki/Tic-tac-toe", target="_blank">Tic Tac Toe Wiki</a> 
+        </div>
+    </body>
+</html>

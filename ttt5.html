@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+    <head>
+        <title>Tic Tac Toe</title>
+        <style type="text/css">
+            #bigbox {width: 330px; margin: 0 auto; font-size: 24}
+            .box-container {width: 330px; margin: 0 auto; font-size: 0}
+
+            .square h3 {font-size: 24px; color: #3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";}
+            
+            .square {border: 1px solid #999; max-width: 100px; width: 100%; text-align: center; display: inline-block; height: 100px; vertical-align: top; margin: 5px 5px 5px 5px; box-sizing: border-box; }
+            .square:hover {background-color: #aa45c5; color: #fff;}
+
+            #turn {font-size: 24px; color: #3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";}
+            #start {font-size: 24px; color:#3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif"}
+
+        </style>
+    </head>
+    <body>
+        <div id="bigbox">
+            <h1>Tony's Tic Tac Toe</h1>
+            
+            <div class="box-container">
+                <div id="turn"></div>
+                <script>
+                    const NUM_SQUARES = 9;
+                    for (i=0; i<NUM_SQUARES; i++)
+                    {
+                    id = "sq"+i;
+                    document.write( "<div class='square' id='" + id + "'></div>" );
+                    }
+                </script>
+
+
+
+                <script>
+                    let win = false;
+                    
+                    // creates array to track moves, default is element is - string
+                    const moves = ["-","-","-","-","-","-","-","-","-"]
+
+                    
+                    
+                    
+                    // clears out x's and o's
+                    function startPressHandler()
+                    {
+                        win = false;
+                        for (y=0; y<9; y++)
+                        {
+                            var id = "sq" + y;
+                            var theSquare = document.getElementById(id);
+                            theSquare.innerHTML = "";
+                        }
+                        
+                    }
+                    
+                    // pulls current turn from indexed h3 and adds x or o
+                    function buttonPressHandler()
+                    {
+                        var currentDisplay = document.getElementById("turn").innerHTML;
+                        var current = currentDisplay[0]
+                        
+                        if (win)
+                        {
+                            return
+                        }  
+
+                        else if (this.querySelector("h3"))
+                        {
+                            return
+                        }
+                        
+                        else
+                        {
+                            this.innerHTML = "<h3>" + current + "</h3>";
+                            //console.log(this.id)
+                        }
+                        
+                        
+                        const squareLog = document.querySelectorAll('.square');
+                        
+                        // grabs h3s and uses indexing to place into moves array
+                        squareLog.forEach((square) => 
+                        {
+                            const h3 = square.querySelector('h3');
+                            let squareMove;
+                            if (h3)
+                            {
+                                squareMove = h3.innerText[0];
+                            }
+                            else
+                            {
+                                squareMove = "-";
+                            }
+                            console.log(square.id[2])
+                            moves[square.id[2]] = squareMove
+                            //console.log(square);
+                            
+                        })
+                        console.log(moves)
+                        
+                        const winConditions = 
+                        [
+                            // row 1
+                            moves[0] + moves[1] + moves[2], 
+                            // row 2
+                            moves[3] + moves[4] + moves[5],
+                            // row 3
+                            moves[6] + moves[7] + moves[8],
+                            // col 1
+                            moves[0] + moves[3] + moves[6],
+                            // col 2
+                            moves[1] + moves[4] + moves[7],
+                            // col 3
+                            moves[2] + moves[5] + moves[8],
+                            // diag 1
+                            moves[0] + moves[4] + moves[8],
+                            // diag 2
+                            moves[2] + moves[4] + moves[6],
+                        ]
+                        
+                        // console.log(winConditions[0])
+
+                        // Checks 
+                         if (winConditions.includes("XXX"))
+                         {
+                            alert("X Wins!");
+                            // document.getElementById("turn").innerText = "X Wins!"
+                            win = true;
+                         }
+                         else if (winConditions.includes("OOO"))
+                        {
+                            alert("O Wins!");
+                            // document.getElementById("turn").innerText = "O Wins!"
+                            win = true;
+                        }
+                       
+
+                        
+                        //joins move elements for a check on hyphens
+                        var checkDash = moves.join("");
+                        if (checkDash.includes("-") == false)
+                        {
+                            alert("Stalemate!")
+                        }
+                        
+
+                        
+                        // updates display
+                        if (current == "X")
+                        {
+                            turn = "O";
+                            document.getElementById("turn").innerHTML = "O's Turn"
+                        }
+                        else
+                        {
+                            turn = "X";
+                            document.getElementById("turn").innerHTML = "X's Turn"
+                        }
+                        
+                        
+                        
+                    }
+
+                    window.onload = 
+                        function()
+                        {
+                            // uses random int and displays current turn
+                            theTurn = Math.round(Math.random());
+                            var turnDisplay = "";
+                            if (theTurn)
+                        {
+                            turnDisplay = "O's Turn";
+                        }
+                        else
+                        {
+                            turnDisplay = "X's Turn";
+                        }
+                        document.getElementById("turn").innerHTML = turnDisplay;
+
+
+                        
+                        for (y=0; y<9; y++)
+                        {
+                            var id = "sq" + y;
+                            var aSquare = document.getElementById(id);
+                            aSquare.onclick = buttonPressHandler;
+                        }
+                        
+                        var btn = document.getElementById("start")
+                        btn.onclick= startPressHandler;
+                            
+
+                        }
+                </script>
+            
+            
+        </div>
+
+            <br>
+            <button type="button" id="start">Start Game</button>
+            <br>
+            <br>
+            <a href="https://en.wikipidia.org/wiki/Tic-tac-toe", target="_blank">Tic Tac Toe Wiki</a> 
+        </div>
+    </body>
+</html>

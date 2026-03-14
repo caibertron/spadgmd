@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>Joe's Hotdogs</title>
+</head>
+<body>
+<script>
+    
+    // defining the class
+    function menu(name, price)
+    {
+        this.name = name;
+        this.price = price;
+        this.show = function()
+        {
+            return this.name + ": " + this.price + "<br>"
+        }
+    }
+
+
+
+
+    // part 1 associative array
+    var menu1 = new Array();
+    menu1["hotdogs"] = "$4";
+    menu1["fries"] = "$3.50";
+    menu1["soda"] = "$1.50";
+    menu1["sauerkraut"] = "$1";
+
+    document.write("<h1>Menu</h1>");
+    for (var item in menu1)
+    {
+        document.write(item + ": " + menu1[item] + "<br>")
+    }
+
+    // part 2 the object menu
+    var menu2 =
+    {
+        "hotdogs": "$4",
+        "fries": "$3.50",
+        "soda": "$1.50",
+        "sauerkraut": "$1"
+    }
+    document.write("<h1>Menu</h1>");
+    for (item in menu2)
+    {
+        document.write(item + ": " + menu2[item] + "<br>")
+    }
+
+
+    // part 3 instantiating the menu class
+    var menu3 = 
+    [
+        new menu("hotdogs", "$4"),
+        new menu("fries", "$3.50"),
+        new menu("soda", "$1.50"),
+        new menu("sauerkraut", "$1"),
+    ]
+    
+    
+    document.write("<h1>Menu</h1>");
+    menu3.forEach((i)=>
+    {
+        document.write(i.show())
+    }
+);
+    
+
+</script>
+</body>
+</html>

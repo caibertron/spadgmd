@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>Joe's Hotdogs</title>
+</head>
+<body>
+<script>
+    
+    
+    function menu(name, price)
+    {
+        this.name = name;
+        this.price = price;
+        this.show = function()
+        {
+            return this.name + ": " + this.price + "<br>";
+        }
+    }
+    
+    
+    var menu3 = 
+    [
+        new menu("hotdogs", "$4"),
+        new menu("fries", "$3.50"),
+        new menu("soda", "$1.50"),
+        new menu("sauerkraut", "$1"),
+    ]
+    
+    // going with glob assoc array
+    var quantity = 
+    {
+        "hotdogs": 0,
+        "fries": 0,
+        "soda": 0,
+        "sauerkraut": 0,
+    }
+        
+        document.write("<h1>Menu</h1>");
+        menu3.forEach((i)=>
+        {
+            document.write(i.show())
+        }
+    );
+    document.write("<br>")
+    
+    
+    // adding dropdown and cart button
+    document.write("Select item: <br> <select id='itemSelect'>");
+    menu3.forEach((item)=>
+    {
+        document.write("<option value='" + item.price + "'>" + item.name + "</option>");
+    });
+    
+    document.write("</select> <br> <button id='addBtn'>Add to Cart</button> <br>");
+    
+    document.write("<div id='cart'> <h3>Shopping Cart</h4></div>");
+    
+    document.write("<button id='checkoutBtn'>Checkout</button>");
+
+    
+    
+    window.onload = function()
+        {
+            // adds the items and quants to the cart div section, after shopping cart!
+            function updateCart()
+            {
+                var cartDiv = document.getElementById("cart");
+                var display = "<h3>Shopping Cart</h3>";
+
+                for (item in quantity)
+                {
+                    if (quantity[item] > 0)
+                    {
+                        display += item + ": " + quantity[item] + "<br>";
+                    }
+                }
+                cartDiv.innerHTML = display;
+            }
+
+            // updates cart with selection
+            document.getElementById("addBtn").onclick = function()
+            {
+                var selectedOption = document.querySelector("#itemSelect option:checked");
+                if (selectedOption)
+                {
+                    var name = selectedOption.text;
+                    quantity[name]++;
+                    updateCart();
+                }
+
+            }
+            
+            document.getElementById("checkoutBtn").onclick = function()
+            {
+                var total = 0;
+                var order = "Your Order\n"
+                var purchase = false;
+                
+                menu3.forEach((item)=>
+                {
+                    var quant = quantity[item.name];
+
+                    if (quant > 0)
+                    {
+                        // new string without the $ 
+                        var indexPrice = item.price.substring(1);
+                        // string to float
+                        var priceNum = parseFloat(indexPrice);
+                        purchase = true;
+
+                        var subtotal = quant * priceNum;
+                        total += subtotal;
+                    
+                        order += item.name + ": " + quant + " * " + item.price + " = $" + subtotal + "\n";
+                    
+                    }
+                });
+
+
+            // empties glob array
+            if (purchase) 
+            {
+                order += "Total: $" + total;
+                alert(order);
+                
+                for (var key in quantity)
+            {
+                quantity[key] = 0;
+            }
+            updateCart();
+            
+            }
+            }
+
+        }
+    
+    
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+    <head>
+        <title>Wordle</title>
+        <style type="text/css">
+            #bigbox {width: 330px; margin: 0 auto; font-size: 24}
+            .box-container {width: 330px; margin: 0 auto; font-size: 0}
+
+            .square h3 {font-size: 24px; color: #3545c5; font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif";}
+            
+            .square {border: 1px solid #999; 
+                width: 56px; height: 56px; margin: 5px; display: inline-block; 
+                vertical-align: top; box-sizing: border-box; text-align: center; line-height: 56px;
+                font-size: 30px;font-family:Gotham, "Helvetica Neue", Helvetica, Arial, "sans-serif"; color: #3545c5}
+            
+
+            #letterboard {width: 310px; margin: 20px; text-align: center;}
+            .key {border: 1px solid; border-radius: 4px; width: 18px; height: 35px; margin: 2px; 
+                display: inline-block; vertical-align: center; line-height: 35px;font-size: 14px; box-sizing: border-box;}
+            /* specials */
+            .special {width: 45px; font-size: 8px;}
+
+            .correct {background-color: green;}
+            .semicorrect {background-color: yellow;}
+            .wrong {background-color: gray;}
+
+
+
+        </style>
+
+
+    </head>
+    <body>
+        <div id="bigbox">
+            <h1>Tony's Wordle</h1>
+            
+            <div class="box-container">
+                <div id="wordle-container"></div>
+                <script>
+                    // creates the wordle board
+                    const NUM_SQUARES = 30;
+                    for (i=0; i<NUM_SQUARES; i++)
+                    {
+                    id = "sq"+i;
+                    document.write( "<div class='square' id='" + id + "'></div>" );
+                    }
+                </script>
+        
+            <hr>
+            <hr>
+
+
+            // creates the letterboard
+            <div id="letterboard">
+                    <script>
+                        const KEYBOARD = "qwertyuiopasdfghjkl?zxcvbnm/"
+                        const NUM_KEYS = 28;
+                        for (i=0; i<NUM_KEYS; i++)
+                        {
+                            kid = "k"+i;
+                            
+                            // account for special keys
+                            if (kid === "k10")
+                            {
+                            document.write("<br><div class='key' id='" + kid + "'>" + KEYBOARD[i] + "</div>"); 
+                            }
+                            else if (kid === "k18")
+                            {
+                            document.write("<br><div class='key' id='" + kid + "'>" + KEYBOARD[i] + "</div>"); 
+                            }
+                            else if (kid === "k19")
+                            {
+                            document.write("<br><div class='key special' id='k19'>ENTER</div>"); 
+                            }
+                            else if (kid === "k27") 
+                            {
+                                document.write("<div class='key special' id='k27'>BACK</div>"); 
+                            }
+                            else 
+                            {
+                                document.write("<div class='key' id='" + kid + "'>" + KEYBOARD[i] + "</div>");
+                            }
+                        }
+                        </script>
+            </div>
+            
+            
+            
+            
+            <script>
+                
+                // generate wordle at global
+
+                var wordBank = ["water", "dream", "green", "draft", "bread", "apple"]
+                var wordle = wordBank[Math.floor(Math.random()*6)];
+                
+                var gameCounter = 0;
+                
+                
+                // event handler for submit, checks length and clears text box, returns str word
+                function buttonPressHandler()
+                {
+                    // !!stops the mechanics of the form tag from clearing words
+                    event.preventDefault()
+
+                    var submitGuessWord = document.getElementById("guessWord")
+                    var aGuessWord = submitGuessWord.value
+
+                    if (aGuessWord.length === 5) 
+                    {
+                        submitGuessWord.value = "";
+                        wordAttempt(aGuessWord)
+                        
+                        gameCheck(aGuessWord);
+
+                        
+                    }
+                    else 
+                    {
+                        alert("Please enter a five letters word");
+                        submitGuessWord.value = "";
+                    }
+                    
+                    // check to see if it is a real word                        
+                    
+                    
+                }
+                
+                
+                /* For each letter in the guess, you must report one of three results: 
+                if the letter is not in the answer (grey)
+                if the letter is in the answer but in a different place than in your guess word (yellow)
+                if the letter is in the same place as in the guess word (green) */
+                // enters guess into the atempt boxes
+                function wordAttempt(validWord)
+                
+                {        
+                    // maps count of letter matches
+                    var letterCounts = {};
+                    for (i=0; i< 5; i++) 
+                    {
+                        // tally technique stolen from coding2go
+                        var char = wordle[i];
+                        letterCounts[char] = (letterCounts[char] || 0) + 1;
+                    }
+                    
+                    // each letter default
+                    var status = ["wrong","wrong","wrong","wrong","wrong"]
+                    var guessArray = validWord.split("")
+                    
+                    // matches lets of validWord find greens
+                    for (i=0; i<5; i++) 
+                    {
+                        if (guessArray[i] === wordle[i]) 
+                        {
+                            status[i] = "correct";
+                            // draw down from available
+                            letterCounts[guessArray[i]] -= 1;
+                        }
+                    }
+                    console.log(letterCounts)
+                    
+                    // find yellows
+                    for (i=0; i<5; i++) 
+                    {
+                        if (status[i] != "correct") 
+                        {
+                            var char = guessArray[i];
+                            if (letterCounts[char] > 0) 
+                            {
+                                status[i] = "semicorrect"
+                                // draw down from available
+                                letterCounts[char] -=1;
+                            }
+                        }
+                    }
+                    console.log(letterCounts)
+                    
+                    // updates squares
+                    for (i=0; i<5; i++) 
+                    {
+                        
+                        var id = "sq" + gameCounter;
+                        // console.log("the id is " + id)
+                        // ensures each letter or validWord is entered into each square
+                        var letter = guessArray[i];
+                        var stat = status[i];
+                        
+                        var theSquare = document.getElementById(id);
+                        theSquare.innerText = letter;
+                        theSquare.className += " " + stat;
+                        
+                        // sends to update letterboard
+                        updateLetterboard(letter, stat);
+                        
+                        gameCounter +=1
+                        
+                    }
+                    
+                }
+                
+                function updateLetterboard(letter, stat) 
+                {
+                    // finds index from keyboard
+                    var idx = KEYBOARD.indexOf(letter);
+                    var keyId = "k" + idx;
+                    var theKey = document.getElementById(keyId);
+                    
+                    // checks if already green
+                    if (theKey.className.indexOf("correct") === -1)  
+                    {
+                        if (stat === "correct")
+                        {
+                            theKey.className = "key correct";
+                        } 
+                        
+                        else if (stat === "semicorrect")
+                        {
+                            theKey.className = "key semicorrect";
+                        }
+                        else if (stat === "wrong" && theKey.className === "key")
+                        {
+                            theKey.className = "key wrong";
+                        }
+                        
+                    }        
+                }
+                
+                // false ends game
+                // The game ends when the user guesses the word or uses all squares.
+                    function gameCheck(currentGuess) 
+                    {
+                        // wordle found!
+                        if (currentGuess === wordle)
+                        {
+                            getDefinitionAlert(wordle, true);
+                            return true;
+                        }
+                        
+                        // no wordle!
+                        if (gameCounter >= 30) 
+                        {
+                            getDefinitionAlert(wordle, false);
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    // reset
+                    function resetGame() 
+                    {
+                        gameCounter = 0;
+                        
+                        // the squares
+                        for (i=0; i<30; i++)
+                        {
+                            var sq = document.getElementById("sq" + i);
+                            sq.innerText = "";
+                            sq.className = "square";
+                        }
+
+                        // keyboard
+                        for (i=0; i<28; i++) 
+                        {
+                            var ky = document.getElementById("k" + i);
+                            if (i === 19 || i === 27)
+                            {
+                                ky.className = "key special";
+                            } 
+                            else 
+                            {
+                                ky.className = "key";
+                            }
+
+                        }
+                
+                    }
+
+                function getDefinitionAlert(word, isWin) 
+                {
+                    // send word to api
+                    fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + word)
+                    // raw text   
+                    .then(res => res.text())
+                    // parse text to object
+                    .then(data => 
+                        {
+                            var dataObj = JSON.parse(data);
+                            // grab the definition
+                            var definition = dataObj[0].meanings[0].definitions[0].definition;
+
+                            if (isWin) 
+                            {
+                                alert("Congratulations! The wordle was " + wordle + "\n\nDefinition: " + definition);
+                            }
+                            else 
+                            {
+                                alert("Game Over. The wordle was " + wordle + "\n\nDefinition: " + definition);
+                            }
+                            resetGame();
+                
+                        })
+                        .catch (error => console.log(error));
+                }
+
+
+            
+
+                    window.onload = 
+                        function()
+                        {
+                        
+                        var aSubmitWord = document.getElementById("submit");
+                        aSubmitWord.onclick = buttonPressHandler;
+                        }
+
+                        
+
+
+                </script>
+        </div>
+
+            <br>
+            <form>
+                <input type="text" id="guessWord" name="guess">
+                <input type="submit" id="submit" value="Check my Guess">
+            </form>
+            <br>
+            <br>
+            <a href="https://www.nytimes.com/games/wordle/index.html", target="_blank">NYT's Wordle</a> 
+        </div>
+    </body>
+</html>
